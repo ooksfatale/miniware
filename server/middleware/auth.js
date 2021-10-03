@@ -1,14 +1,22 @@
 import jwt              from 'jsonwebtoken';
 import { config }       from '../config.js';
-import * as userModel   from '../models/users.js';
+import * as userModel   from '../models/usersModel.js';
 
 
 //jwt 토큰 생성
-export const sign = (userSno, userId) => {
-    return jwt.sign({ userSno, userId }, config.jwt.secretKey,{
+export const accessToken = (userId, userEmail) => {
+    return jwt.sign({ userId, userEmail }, config.jwt.secretKey,{
         expiresIn: config.jwt.expiresInSec,
     });
-}
+};
+
+//jwt 토큰 갱신
+export const refreshToken = (userId, userEmail) => {
+    return jwt.sign({userId, userEmail}, config.jwt.refreshSecretKey,{
+        expiresIn: config.jwt.refreshSecretKey,
+    });
+};
+
 
 //jwt 토큰 검증
 export const isAuth = async (req,res,next) =>{

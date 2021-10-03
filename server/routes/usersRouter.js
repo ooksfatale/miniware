@@ -1,28 +1,32 @@
 import express              from 'express';
 import { body }             from 'express-validator';
-import * as userController  from '../controllers/users.js'
+import * as userController  from '../controllers/usersController.js'
 import { validate }         from '../middleware/validate.js'
 import { isAuth }           from '../middleware/auth.js';
 import 'express-async-errors';
 
 const router = express.Router();
 const validateSignin = [
-    body('user_id')
+    body('userEmail')
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('올바른 이메일 형식을 입력해주세요.'),
+    body('userPw')
     .trim()
-    .notEmpty()
-    .withMessage('아이디를 입력하세요.'),
-    body('user_pw')
-    .trim()
-    .isLength({min : 5})
-    .withMessage('패스워드 5이상'),
+    .isLength({min : 6})
+    .withMessage('비밀번호가 일치하지 않습니다.'),
     validate,
 ];
 const validateSignup = [
     ...validateSignin,
-    body('user_nm').notEmpty().withMessage('필수 정보 입니다.'),
-    body('user_email').isEmail().normalizeEmail().withMessage('올바른 이메일 주소를 넣으세요'),
+    body('userNm').notEmpty().withMessage('필수 정보 입니다.'),
     validate,
 ];
+
+
+router.get('/login',(req,res)=>{
+    res.render('users/login',{layout:false});
+});
 
 // 회원가입
 router.post('/signup', validateSignup, userController.signup);

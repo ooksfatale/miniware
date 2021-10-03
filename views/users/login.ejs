@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <%- include('../partials/head')%>
+    <title>Login</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-4 mx-auto">
+                <div class="card  shadow round my-5">
+                    <div class="card-body p-4 p-sm-5">
+                        <h1 class="text-center mb-5">Log in</h1>
+
+                        <form action="/users/signin" method="POST" class="row g-3 needs-validation" novalidate>
+                            <div class="col-md-12">
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text bi bi-person-fill"></span>
+                                    <input type="email" name="userEmail" class="form-control"  placeholder="Email address" required>
+                                    <div class="invalid-feedback">Please choose a email address.</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="input-group has-validation">
+                                    <span class="input-group-text bi bi-lock-fill"></span>
+                                    <input type="password" name="userPw" class="form-control"  placeholder="Password" required>
+                                    <div class="invalid-feedback">Please choose a password.</div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex  gap-2">
+                                <a href="#" class="link-secondary text-decoration-none">비밀번호 찾기</a>
+                                <div class="vr"></div>
+                                <a href="#" class="link-secondary text-decoration-none">회원가입</a>
+                            </div>
+
+                            <div class="d-grid">
+                                <button class="btn btn-secondary">로그인</button>
+                            </div>
+                        </form>
+                        <hr class="my-4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('../common/common')%>
+    <script>
+
+        const socket = io();
+
+        document.addEventListener('DOMContentLoaded', function(){
+            const form = document.querySelector('form');
+            
+            form.addEventListener('submit', async function(event) {
+                event.preventDefault();
+                const userEmail = form.userEmail.value;
+                const userPw = form.userPw.value;
+
+                try{
+                    const result = await fetch("http://localhost:3000/users/signin", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json",},
+                        body: JSON.stringify({ userEmail, userPw }),
+                    });
+                    const data =  result.json();
+                    console.log(data);
+
+                }catch(err){    
+                    console.log(err);
+                }
+            });
+            
+        });
+    </script>
+</body>
+</html>

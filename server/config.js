@@ -11,8 +11,10 @@ function required(key, defaultValue = undefined) {
 
 export const config = {
   jwt: {
-    secretKey: required('JWT_SECRET'),
+    secretKey: required('JWT_SECRET_KEY'),
     expiresInSec: parseInt(required('JWT_EXPIRES_SEC', 86400)),
+    refreshSecretKey: required('JWT_REFRESH_SECRET_KEY'),
+    refreshExpiresInSec: parseInt(required('JWT_EXPIRES_SEC')),
   },
   bcrypt: {
     saltRounds: parseInt(required('BCRYPT_SALT_ROUNDS', 12)),
@@ -26,4 +28,11 @@ export const config = {
     database: required('DB_DATABASE'),
     password: required('DB_PASSWORD'),
   },
+  mail:{
+    service : required('MAIL_SERVICE'),
+    host : required('MAIL_HOST'),
+    port : required('MAIL_PORT'),
+    user : required('MAIL_USER'),
+    pw : required('MAIL_PW'),
+  }
 };
