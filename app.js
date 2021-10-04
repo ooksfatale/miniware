@@ -43,18 +43,27 @@ sequelize.sync()
 .then((data)=>console.log('db connect'))
 .catch((err) =>console.log('DB error : ',err));
 
-
+// web server start
 const httpServer = http.createServer(app);
-const io = new Server(httpServer, {cors:{origin:"*"}});
-
 httpServer.listen(config.host.port,()=>{
     console.log(`${config.host.port} port start`);
 });
 
+//socket io start
+const io = new Server(httpServer, {cors:{origin:"*"}});
 
 io.on('connection', (socket) =>{
-    console.log("user socket id", socket.id);
+    console.log(socket.id, 'Connect');
+    socket.emit('usercount', io.engine.clientsCount);
 
-    socket.emit('message', 'Welcome to chat');
-});
+    socket.on('message', (msg)=>{
+        console.log('Message received : ',msg);
+        io.emit('message',msg);
+        
+    });
+
+    socket.on('dissconnect',()=>{
+        io.emit('message','A user has left the chat');
+    });
+});;
 

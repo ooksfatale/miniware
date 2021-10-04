@@ -1,12 +1,45 @@
 <h1 class="mt-5">Sticky footer with fixed navbar</h1>
 
+
+    <form id="chatForm">
+        <div class="col-md-6">
+            <div class="input-group mb-3">
+                <input type="text" id="chatInput" class="form-control">
+                <button class="btn btn-warning" type="button">Send</button>
+            </div>
+        </div>
+    </form>
+
+    
+    <ul id="messages" type="none">
+        <li id="usercount"></li>
+    </ul>
+
     <script src="/socket.io/socket.io.js"></script>
-
-
     <script>
         const socket = io();
+        const chatForm = document.getElementById('chatForm');
+        
+        socket.on('usercount', count =>{
+             const userCounter = document.getElementById('usercount');
+             userCounter.innerText = "현재 "+count + "명이 서버에 접속해있습니다.";
+        });
 
-        socket.emit()
+        socket.on('message', (msg) => {
+            const messageList = document.getElementById('messages');
+            const messageTag = document.createElement("li");
+            messageTag.innerText = msg;
+            messageList.appendChild(messageTag);
+        });
+
+        chatForm.onsubmit = (e) =>{
+            e.preventDefault();
+
+            const chatInput = document.getElementById('chatInput');
+            socket.emit('message', chatInput.value);
+
+            chatInput.value = "";
+        };
 
 
     </script>
